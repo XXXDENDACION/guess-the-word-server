@@ -1,0 +1,7 @@
+type Mutation {
+  add(x: Int!, y: Int!): Int!
+}
+
+type Query {
+  dogs(word: String): String!
+}
