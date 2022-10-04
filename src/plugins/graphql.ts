@@ -1,5 +1,7 @@
 import mercurius from 'mercurius'
 import { loadSchemaFiles, codegenMercurius } from "mercurius-codegen";
+import jwt from 'jsonwebtoken';
+import mercuriusAuth from 'mercurius-auth';
 import {app} from '../app';
 
 import { FastifyRequest, FastifyReply } from 'fastify'
@@ -32,6 +34,22 @@ app.register(mercurius, {
     context: buildContext,
     subscription: true,
     graphiql: true
+});
+
+app.register(mercuriusAuth, {
+    authContext(context) {
+        return { identity: context.reply.request.headers['x-user'] };
+    },
+    async applyPolicy(authDirectiveAST, parent, args, context, info) {
+        const token = context?.auth?.identity;
+        try {
+            const claim = <jwt.JwtPayload>jwt.verify(token, 'secret');
+            return claim?.role === 'admin';
+        } catch (err) {
+            throw new Error('Error!');
+        }
+    },
+    authDirective: 'auth'
 })
   
 type PromiseType<T> = T extends PromiseLike<infer U> ? U : T
@@ -39,6 +57,14 @@ type PromiseType<T> = T extends PromiseLike<infer U> ? U : T
 declare module 'mercurius' {
     interface MercuriusContext
         extends PromiseType<ReturnType<typeof buildContext>> {}
+}
+
+declare module "jsonwebtoken" {
+    export interface JwtPayload {
+        username: string;
+        role: string;
+        password: string;
+    }
 }
   
 

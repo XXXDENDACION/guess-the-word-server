@@ -1,3 +1,3 @@
 [
-  "type Mutation {\n  add(x: Int!, y: Int!): Int!\n}\n\ntype Query {\n  dogs(word: String): String!\n}"
+  "directive @auth(requires: Role = ADMIN) on OBJECT | FIELD_DEFINITION\n\nenum Role {\n  ADMIN\n  USER\n  TEST\n}\n\ntype Mutation {\n  add(x: Int!, y: Int!): Int!\n}\n\ntype Query {\n  user(id: ID!): User! @auth(requires: ADMIN)\n  users: [User]! @auth(requires: ADMIN)\n  login(username: String!, password: String!): String\n  dogs(word: String): String!\n}\n\ntype User {\n  id: ID!\n  username: String!\n  email: String!\n  password: String!\n  role: String!\n}"
 ]

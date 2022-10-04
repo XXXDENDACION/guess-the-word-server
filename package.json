@@ -22,10 +22,13 @@
     "fastify": "^4.6.0",
     "fastify-plugin": "^4.0.0",
     "graphql": "^16.6.0",
+    "jsonwebtoken": "^8.5.1",
     "mercurius": "^10.5.1",
+    "mercurius-auth": "^3.0.0",
     "mercurius-codegen": "^4.0.1"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^18.0.0",
     "@types/tap": "^15.0.5",
     "concurrently": "^7.0.0",
