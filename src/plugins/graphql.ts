@@ -51,6 +51,11 @@ app.register(mercuriusAuth, {
     },
     authDirective: 'auth'
 })
+
+codegenMercurius(app, {
+    targetPath: './src/graphql/generated.ts'
+}).catch(console.error);
+
   
 type PromiseType<T> = T extends PromiseLike<infer U> ? U : T
   
@@ -67,7 +72,3 @@ declare module "jsonwebtoken" {
     }
 }
   
-
-codegenMercurius(app, {
-    targetPath: './src/graphql/generated.ts'
-}).catch(console.error);
