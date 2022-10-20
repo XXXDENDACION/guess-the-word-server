@@ -9,8 +9,24 @@ const add: MutationResolvers['add'] = async function add(
     return sum;
 }
 
+const createUser: MutationResolvers['createUser'] = async function createUser(
+    _,
+    { user },
+    context
+) {
+    const newUser = await context.prisma.user.create({
+        data: {
+            ...user
+        }
+    })
+
+    console.log(newUser);
+    return newUser;
+}
+
 export const mutations: IResolvers = {
     Mutation: {
-        add
+        add,
+        createUser
     }
 }

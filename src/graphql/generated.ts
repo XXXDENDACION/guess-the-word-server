@@ -38,14 +38,26 @@ export enum Role {
   TEST = "TEST",
 }
 
+export type createUserInput = {
+  name?: InputMaybe<Scalars["String"]>;
+  email: Scalars["String"];
+  password: Scalars["String"];
+  role?: InputMaybe<Scalars["String"]>;
+};
+
 export type Mutation = {
   __typename?: "Mutation";
   add: Scalars["Int"];
+  createUser: User;
 };
 
 export type MutationaddArgs = {
   x: Scalars["Int"];
   y: Scalars["Int"];
+};
+
+export type MutationcreateUserArgs = {
+  user: createUserInput;
 };
 
 export type Query = {
@@ -57,7 +69,7 @@ export type Query = {
 };
 
 export type QueryuserArgs = {
-  id: Scalars["ID"];
+  id: Scalars["Int"];
 };
 
 export type QueryloginArgs = {
@@ -71,11 +83,11 @@ export type QuerydogsArgs = {
 
 export type User = {
   __typename?: "User";
-  id: Scalars["ID"];
-  username: Scalars["String"];
+  id: Scalars["Int"];
+  name?: Maybe<Scalars["String"]>;
   email: Scalars["String"];
   password: Scalars["String"];
-  role: Scalars["String"];
+  role?: Maybe<Scalars["String"]>;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -179,22 +191,22 @@ export type DirectiveResolverFn<
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Role: Role;
+  createUserInput: createUserInput;
+  String: ResolverTypeWrapper<Scalars["String"]>;
   Mutation: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars["Int"]>;
   Query: ResolverTypeWrapper<{}>;
-  ID: ResolverTypeWrapper<Scalars["ID"]>;
-  String: ResolverTypeWrapper<Scalars["String"]>;
   User: ResolverTypeWrapper<User>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  createUserInput: createUserInput;
+  String: Scalars["String"];
   Mutation: {};
   Int: Scalars["Int"];
   Query: {};
-  ID: Scalars["ID"];
-  String: Scalars["String"];
   User: User;
   Boolean: Scalars["Boolean"];
 };
@@ -219,6 +231,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationaddArgs, "x" | "y">
+  >;
+  createUser?: Resolver<
+    ResolversTypes["User"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationcreateUserArgs, "user">
   >;
 };
 
@@ -255,11 +273,11 @@ export type UserResolvers<
   ContextType = MercuriusContext,
   ParentType extends ResolversParentTypes["User"] = ResolversParentTypes["User"]
 > = {
-  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
-  username?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   password?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  role?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  role?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
   isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -296,11 +314,11 @@ export interface Loaders<
   }
 > {
   User?: {
-    id?: LoaderResolver<Scalars["ID"], User, {}, TContext>;
-    username?: LoaderResolver<Scalars["String"], User, {}, TContext>;
+    id?: LoaderResolver<Scalars["Int"], User, {}, TContext>;
+    name?: LoaderResolver<Maybe<Scalars["String"]>, User, {}, TContext>;
     email?: LoaderResolver<Scalars["String"], User, {}, TContext>;
     password?: LoaderResolver<Scalars["String"], User, {}, TContext>;
-    role?: LoaderResolver<Scalars["String"], User, {}, TContext>;
+    role?: LoaderResolver<Maybe<Scalars["String"]>, User, {}, TContext>;
   };
 }
 declare module "mercurius" {

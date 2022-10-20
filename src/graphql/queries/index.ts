@@ -16,12 +16,12 @@ export const queries: IResolvers = {
             return user;
         },
         login: async (_, { username, password }) => {
-            const user = users.find(user => user.username && user.password === password);
+            const user = users.find(user => user.name && user.password === password);
             if (!user) {
                 throw new Error('unknown user!');
             }
 
-            const token = jwt.sign({ username: user.username, password: user.password, role: user.role}, 'secret');
+            const token = jwt.sign({ username: user.name, password: user.password, role: user.role}, 'secret');
             return token;
         }
     }

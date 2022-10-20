@@ -6,21 +6,29 @@ enum Role {
   TEST
 }
 
+input createUserInput {
+  name: String,
+  email: String!,
+  password: String!,
+  role: String
+}
+
 type Mutation {
   add(x: Int!, y: Int!): Int!
+  createUser(user: createUserInput!): User!
 }
 
 type Query {
-  user(id: ID!): User! @auth(requires: ADMIN)
+  user(id: Int!): User! @auth(requires: ADMIN)
   users: [User]! @auth(requires: ADMIN)
   login(username: String!, password: String!): String
   dogs(word: String): String!
 }
 
 type User {
-  id: ID!
-  username: String!
+  id: Int!
+  name: String
   email: String!
   password: String!
-  role: String!
+  role: String
 }

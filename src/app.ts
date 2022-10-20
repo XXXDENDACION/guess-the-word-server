@@ -9,7 +9,6 @@ app.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins')
 })
 
-
 app.get('/ping', async (request, reply) => {
     return 'pong\n';
 })
