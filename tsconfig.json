@@ -9,7 +9,7 @@
   "files": [
     "fastify.d.ts",
     "fastify-jwt.d.ts",
-    "mercurious.d.ts"
+    "mercurius.d.ts"
   ],
   "include": ["src/**/*.ts", "graphql-codegen.ts"]
 }
