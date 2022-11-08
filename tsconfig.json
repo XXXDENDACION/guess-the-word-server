@@ -7,7 +7,9 @@
     "esModuleInterop": true
   },
   "files": [
-    "fastify-jwt.d.ts"
+    "fastify.d.ts",
+    "fastify-jwt.d.ts",
+    "mercurious.d.ts"
   ],
   "include": ["src/**/*.ts", "graphql-codegen.ts"]
 }
