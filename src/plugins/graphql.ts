@@ -1,14 +1,14 @@
+import { PrismaClient } from "@prisma/client";
+import { FastifyJWT } from "@fastify/jwt";
 import mercurius from "mercurius";
 import { loadSchemaFiles, codegenMercurius } from "mercurius-codegen";
-import jwt from "jsonwebtoken";
 import mercuriusAuth from "mercurius-auth";
+
 import { app } from "../app";
 
 import { FastifyRequest, FastifyReply } from "fastify";
-
 import { resolvers } from "../graphql";
 import { buildSchema } from "graphql";
-import { PrismaClient } from "@prisma/client";
 
 const buildContext = async (req: FastifyRequest, _reply: FastifyReply) => {
   return {
@@ -45,7 +45,7 @@ app.register(mercuriusAuth, {
   async applyPolicy(authDirectiveAST, parent, args, context, info) {
     const token = context?.auth?.identity;
     try {
-      const claim = <jwt.JwtPayload>jwt.verify(token, "secret");
+      const claim = app.jwt.verify<FastifyJWT>(token);
       return claim?.role === "admin";
     } catch (err) {
       throw new Error("Error!");
@@ -63,14 +63,6 @@ type PromiseType<T> = T extends PromiseLike<infer U> ? U : T;
 declare module "mercurius" {
   interface MercuriusContext
     extends PromiseType<ReturnType<typeof buildContext>> {}
-}
-
-declare module "jsonwebtoken" {
-  export interface JwtPayload {
-    username: string;
-    role: string;
-    password: string;
-  }
 }
 
 declare module "fastify" {

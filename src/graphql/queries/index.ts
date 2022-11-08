@@ -1,6 +1,5 @@
-import jwt from 'jsonwebtoken';
-import { users } from '../../data/users';
 import { IResolvers } from "mercurius";
+import { users } from '../../data/users';
 
 export const queries: IResolvers = {
     Query: {
@@ -15,13 +14,13 @@ export const queries: IResolvers = {
             }
             return user;
         },
-        login: async (_, { username, password }) => {
+        login: async (_, { username, password }, context) => {
             const user = users.find(user => user.name && user.password === password);
             if (!user) {
                 throw new Error('unknown user!');
             }
 
-            const token = jwt.sign({ username: user.name, password: user.password, role: user.role}, 'secret');
+            const token = context.reply.jwtSign({ username: user.name, password: user.password, role: user.role});
             return token;
         }
     }

@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance } from 'fastify';
+import fastify, { FastifyInstance } from "fastify";
 import AutoLoad from '@fastify/autoload';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import path = require('path');

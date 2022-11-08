@@ -17,13 +17,15 @@
     "db:push": "prisma db push --preview-feature",
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
-    "migrate:reset": "prisma migrate reset"
+    "migrate:reset": "prisma migrate reset",
+    "prisma:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@fastify/autoload": "^5.0.0",
+    "@fastify/jwt": "^6.3.2",
     "@fastify/sensible": "^5.0.0",
     "@prisma/client": "^4.3.0",
     "altair-fastify-plugin": "^5.0.3",
