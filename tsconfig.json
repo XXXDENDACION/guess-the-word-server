@@ -9,9 +9,9 @@
     "noImplicitReturns": true,
   },
   "files": [
-    "fastify.d.ts",
-    "fastify-jwt.d.ts",
-    "mercurius.d.ts"
+    "declarations/fastify.d.ts",
+    "declarations/fastify-jwt.d.ts",
+    "declarations/mercurius.d.ts"
   ],
   "include": ["src/**/*.ts", "graphql-codegen.ts"]
 }

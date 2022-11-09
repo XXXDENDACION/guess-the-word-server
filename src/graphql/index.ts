@@ -1,3 +1,3 @@
-import { resolvers } from "./resolvers";
+import { resolvers } from './resolvers';
 
 export { resolvers };

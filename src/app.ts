@@ -1,21 +1,22 @@
-import fastify, { FastifyInstance } from "fastify";
-import AutoLoad from '@fastify/autoload';
 import { IncomingMessage, Server, ServerResponse } from 'http';
-import path = require('path');
+import path from 'path';
+import * as dotenv from 'dotenv';
+import fastify, { FastifyInstance } from 'fastify';
+import AutoLoad from '@fastify/autoload';
 
-export const app: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({logger: true});
+dotenv.config();
+
+export const app: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify(
+    { logger: true },
+);
 
 app.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins')
-})
+    dir: path.join(__dirname, 'plugins'),
+});
 
-app.get('/ping', async (request, reply) => {
-    return 'pong\n';
-})
+app.get('/ping', async (request, reply) => 'pong\n');
 
-app.get('/', async (request, reply) => {
-    return 'Hello';
-})
+app.get('/', async (request, reply) => 'Hello');
 
 app.listen({ port: 8080 }, (err, address) => {
     if (err) {
@@ -23,4 +24,4 @@ app.listen({ port: 8080 }, (err, address) => {
         process.exit(1);
     }
     console.log(`app listening at ${address}`);
-})
+});

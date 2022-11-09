@@ -1,8 +1,8 @@
-import "mercurius";
+import 'mercurius';
 
 type PromiseType<T> = T extends PromiseLike<infer U> ? U : T;
 
-declare module "mercurius" {
+declare module 'mercurius' {
   interface MercuriusContext
     extends PromiseType<ReturnType<typeof buildContext>> {}
 }
