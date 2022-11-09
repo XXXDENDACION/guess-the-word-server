@@ -4,7 +4,9 @@
     "strict": true,
     "outDir": "dist",
     "sourceMap": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
   },
   "files": [
     "fastify.d.ts",
