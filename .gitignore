@@ -67,3 +67,7 @@ dist
 # generated
 
 src/graphql/generated.ts
+
+/prisma/dev.db
+
+.env

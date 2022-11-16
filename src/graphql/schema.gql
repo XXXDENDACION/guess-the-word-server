@@ -1,16 +1,25 @@
 directive @auth(requires: Role = ADMIN) on OBJECT | FIELD_DEFINITION
 
+scalar DateTime
+
 enum Role {
   ADMIN
   USER
-  TEST
 }
 
 input createUserInput {
-  name: String,
-  email: String!,
-  password: String!,
+  name: String
+  email: String!
   role: String
+  provider: String!
+  socialId: String!
+}
+
+input loginUserInput {
+  name: String
+  socialId: String!
+  provider: String!
+  email: String!
 }
 
 type Mutation {
@@ -21,14 +30,25 @@ type Mutation {
 type Query {
   user(id: Int!): User! @auth(requires: ADMIN)
   users: [User]! @auth(requires: ADMIN)
-  login(username: String!, password: String!): String
+  login(input: loginUserInput!): Tokens
   dogs(word: String): String!
 }
 
 type User {
   id: Int!
   name: String
+  provider: String!
+  socialId: String!
   email: String!
-  password: String!
   role: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Tokens {
+  id: Int!
+  userId: Int!
+  refreshToken: String!
+  createdAt: DateTime
+  updatedAt: DateTime
 }

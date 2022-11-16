@@ -11,9 +11,22 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  password String
-  name     String?
-  role     String?
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  email         String      @unique
+  provider      String
+  socialId      String
+  name          String?
+  role          String?
+  tokens        Tokens[]
+}
+
+model Tokens {
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  refreshToken  String
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int         @unique
 }

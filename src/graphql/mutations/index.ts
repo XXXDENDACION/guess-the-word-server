@@ -1,32 +1,14 @@
-import { IResolvers } from 'mercurius';
-import { MutationResolvers } from '../generated';
+import { IResolvers } from 'mercurius'
+import { MutationResolvers } from '../generated'
 
-const add: MutationResolvers['add'] = async function add(
-    _,
-    { x, y },
-) {
-    const sum = x + y;
-    return sum;
-};
+type Mutations = {
+    add: MutationResolvers['add']
+}
 
-const createUser: MutationResolvers['createUser'] = async function createUser(
-    _,
-    { user },
-    context,
-) {
-    const newUser = await context.prisma.user.create({
-        data: {
-            ...user,
-        },
-    });
-
-    console.log(newUser);
-    return newUser;
-};
-
-export const mutations: IResolvers = {
+export const mutations: IResolvers<Mutations> = {
     Mutation: {
-        add,
-        createUser,
+        add: async (_, { x, y }) => {
+            return x + y
+        },
     },
-};
+}

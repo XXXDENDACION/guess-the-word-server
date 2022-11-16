@@ -1,31 +1,29 @@
 import fp from 'fastify-plugin';
-import { FastifyPluginCallback, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyPluginCallback } from 'fastify';
 import { FastifyJWT } from '@fastify/jwt';
 
-import mercurius from 'mercurius';
+import mercurius, { IResolvers } from 'mercurius';
 import { codegenMercurius, loadSchemaFiles } from 'mercurius-codegen';
 import mercuriusAuth from 'mercurius-auth';
 
-import { PrismaClient } from '@prisma/client';
+import { buildSchema } from 'graphql';
+import { resolvers as baseResolvers } from '../graphql';
+import { buildContext } from '../graphql/mercuriusContext';
 
-import { buildSchema } from 'graphql/index';
-import { resolvers } from '../graphql';
+import { userResolvers } from '../modules/user';
 
-type ContextMercurius = {
-    prisma: PrismaClient
-    request: FastifyRequest,
-    reply: FastifyReply,
-    authorization?: string
-}
+const resolvers: IResolvers = {
+    Query: {
+        ...baseResolvers.Query,
+        ...userResolvers.Query,
+    },
+    Mutation: {
+        ...baseResolvers.Mutation,
+        ...userResolvers.Mutation,
+    },
+};
 
 const mercuriusPlugin: FastifyPluginCallback = (server, opts, done) => {
-    const buildContext = async (request: FastifyRequest, reply: FastifyReply): Promise<ContextMercurius> => ({
-        authorization: request.headers.authorization,
-        prisma: server.prisma,
-        request,
-        reply,
-    });
-
     const { schema } = loadSchemaFiles('src/graphql/schema.gql', {
         watchOptions: {
             onChange() {
@@ -42,7 +40,7 @@ const mercuriusPlugin: FastifyPluginCallback = (server, opts, done) => {
     server.register(mercurius, {
         schema,
         resolvers,
-        context: buildContext,
+        context: (request, reply) => buildContext(request, reply, server),
         subscription: true,
         graphiql: true,
     });
@@ -52,7 +50,7 @@ const mercuriusPlugin: FastifyPluginCallback = (server, opts, done) => {
             return { identity: context.reply.request.headers['x-user'] };
         },
         async applyPolicy(authDirectiveAST, parent, args, context) {
-            const token = context?.auth?.identity;
+            const token = <string>context?.auth?.identity;
             try {
                 const claim = server.jwt.verify<FastifyJWT>(token);
                 return claim?.role === 'admin';

@@ -1,25 +1,12 @@
-import { IResolvers } from 'mercurius';
-import { users } from '../../data/users';
+import { IResolvers } from 'mercurius'
+import { QueryResolvers } from '../generated'
 
-export const queries: IResolvers = {
+type Queries = {
+    dogs: QueryResolvers['dogs']
+}
+
+export const queries: IResolvers<Queries> = {
     Query: {
-        dogs: async (_, { word }) => `Wow! ${word}`,
-        users: async () => users,
-        user: async (_, { id }) => {
-            const user = users.find((u) => u.id === id);
-            if (!user) {
-                throw new Error('unknown user');
-            }
-            return user;
-        },
-        login: async (_, { password }, context) => {
-            const user = users.find((u) => u.name && u.password === password);
-            if (!user) {
-                throw new Error('unknown user!');
-            }
-
-            const token = context.reply.jwtSign({ username: user.name, password: user.password, role: user.role });
-            return token;
-        },
+        dogs: async (_, { word }) => `Wow! ${String(word)}`,
     },
-};
+}
