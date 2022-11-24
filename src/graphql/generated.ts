@@ -74,10 +74,15 @@ export type MutationcreateUserArgs = {
 
 export type Query = {
     __typename?: 'Query';
+    dogs: Scalars['String'];
     user: User;
     users: Array<Maybe<User>>;
     login?: Maybe<Tokens>;
-    dogs: Scalars['String'];
+    refresh: GeneratedTokens;
+};
+
+export type QuerydogsArgs = {
+    word?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryuserArgs = {
@@ -88,8 +93,14 @@ export type QueryloginArgs = {
     input: loginUserInput;
 };
 
-export type QuerydogsArgs = {
-    word?: InputMaybe<Scalars['String']>;
+export type QueryrefreshArgs = {
+    refreshToken: Scalars['String'];
+};
+
+export type GeneratedTokens = {
+    __typename?: 'GeneratedTokens';
+    accessToken?: Maybe<Scalars['String']>;
+    refreshToken: Scalars['String'];
 };
 
 export type User = {
@@ -221,6 +232,7 @@ export type ResolversTypes = {
     Mutation: ResolverTypeWrapper<{}>;
     Int: ResolverTypeWrapper<Scalars['Int']>;
     Query: ResolverTypeWrapper<{}>;
+    GeneratedTokens: ResolverTypeWrapper<GeneratedTokens>;
     User: ResolverTypeWrapper<User>;
     Tokens: ResolverTypeWrapper<Tokens>;
     Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
@@ -235,6 +247,7 @@ export type ResolversParentTypes = {
     Mutation: {};
     Int: Scalars['Int'];
     Query: {};
+    GeneratedTokens: GeneratedTokens;
     User: User;
     Tokens: Tokens;
     Boolean: Scalars['Boolean'];
@@ -278,6 +291,12 @@ export type QueryResolvers<
     ContextType = MercuriusContext,
     ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
+    dogs?: Resolver<
+        ResolversTypes['String'],
+        ParentType,
+        ContextType,
+        Partial<QuerydogsArgs>
+    >;
     user?: Resolver<
         ResolversTypes['User'],
         ParentType,
@@ -295,12 +314,25 @@ export type QueryResolvers<
         ContextType,
         RequireFields<QueryloginArgs, 'input'>
     >;
-    dogs?: Resolver<
-        ResolversTypes['String'],
+    refresh?: Resolver<
+        ResolversTypes['GeneratedTokens'],
         ParentType,
         ContextType,
-        Partial<QuerydogsArgs>
+        RequireFields<QueryrefreshArgs, 'refreshToken'>
     >;
+};
+
+export type GeneratedTokensResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['GeneratedTokens'] = ResolversParentTypes['GeneratedTokens']
+> = {
+    accessToken?: Resolver<
+        Maybe<ResolversTypes['String']>,
+        ParentType,
+        ContextType
+    >;
+    refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserResolvers<
@@ -342,6 +374,7 @@ export type Resolvers<ContextType = MercuriusContext> = {
     DateTime?: GraphQLScalarType;
     Mutation?: MutationResolvers<ContextType>;
     Query?: QueryResolvers<ContextType>;
+    GeneratedTokens?: GeneratedTokensResolvers<ContextType>;
     User?: UserResolvers<ContextType>;
     Tokens?: TokensResolvers<ContextType>;
 };
@@ -372,6 +405,21 @@ export interface Loaders<
         reply: import('fastify').FastifyReply;
     }
 > {
+    GeneratedTokens?: {
+        accessToken?: LoaderResolver<
+            Maybe<Scalars['String']>,
+            GeneratedTokens,
+            {},
+            TContext
+        >;
+        refreshToken?: LoaderResolver<
+            Scalars['String'],
+            GeneratedTokens,
+            {},
+            TContext
+        >;
+    };
+
     User?: {
         id?: LoaderResolver<Scalars['Int'], User, {}, TContext>;
         name?: LoaderResolver<Maybe<Scalars['String']>, User, {}, TContext>;

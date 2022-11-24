@@ -1,6 +1,5 @@
 import fp from 'fastify-plugin';
 import { FastifyPluginCallback } from 'fastify';
-import { FastifyJWT } from '@fastify/jwt';
 
 import mercurius, { IResolvers } from 'mercurius';
 import { codegenMercurius, loadSchemaFiles } from 'mercurius-codegen';
@@ -46,16 +45,18 @@ const mercuriusPlugin: FastifyPluginCallback = (server, opts, done) => {
     });
 
     server.register(mercuriusAuth, {
-        authContext(context) {
+        async authContext(context) {
             return { identity: context.reply.request.headers['x-user'] };
         },
         async applyPolicy(authDirectiveAST, parent, args, context) {
-            const token = <string>context?.auth?.identity;
             try {
-                const claim = server.jwt.verify<FastifyJWT>(token);
-                return claim?.role === 'admin';
+                const token = await context.request.jwtVerify();
+                return !!token;
             } catch (err) {
-                throw new Error('Error!');
+                if (err instanceof Error) {
+                    throw new Error(err.message);
+                }
+                throw new Error('Internal Error');
             }
         },
         authDirective: 'auth',

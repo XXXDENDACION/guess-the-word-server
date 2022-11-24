@@ -28,10 +28,16 @@ type Mutation {
 }
 
 type Query {
+  dogs(word: String): String!
   user(id: Int!): User! @auth(requires: ADMIN)
   users: [User]! @auth(requires: ADMIN)
   login(input: loginUserInput!): Tokens
-  dogs(word: String): String!
+  refresh(refreshToken: String!): GeneratedTokens!
+}
+
+type GeneratedTokens {
+  accessToken: String
+  refreshToken: String!
 }
 
 type User {
