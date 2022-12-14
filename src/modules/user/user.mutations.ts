@@ -1,5 +1,5 @@
-import { IResolvers, MercuriusContext } from 'mercurius'
-import { MutationResolvers } from '../../graphql/generated'
+import type { IResolvers, MercuriusContext } from 'mercurius'
+import type { MutationResolvers } from '../../graphql/generated'
 
 type UserMutations = {
     createUser: MutationResolvers['createUser']

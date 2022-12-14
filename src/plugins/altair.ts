@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 import AltairFastify from 'altair-fastify-plugin';
-import { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginCallback } from 'fastify';
 
 const altairPlugin: FastifyPluginCallback = (fastify, opts, done) => {
     fastify.register(AltairFastify, {

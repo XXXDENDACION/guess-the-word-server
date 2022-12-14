@@ -77,7 +77,7 @@ export type Query = {
     dogs: Scalars['String'];
     user: User;
     users: Array<Maybe<User>>;
-    login?: Maybe<Tokens>;
+    login: GeneratedTokens;
     refresh: GeneratedTokens;
 };
 
@@ -309,7 +309,7 @@ export type QueryResolvers<
         ContextType
     >;
     login?: Resolver<
-        Maybe<ResolversTypes['Tokens']>,
+        ResolversTypes['GeneratedTokens'],
         ParentType,
         ContextType,
         RequireFields<QueryloginArgs, 'input'>

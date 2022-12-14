@@ -1,5 +1,5 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
-import { PrismaClient } from '@prisma/client'
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
+import type { PrismaClient } from '@prisma/client'
 
 type ContextMercurius = {
     prisma: PrismaClient

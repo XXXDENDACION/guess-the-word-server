@@ -1,4 +1,4 @@
-import { User } from '../graphql/generated';
+import type { User } from '../graphql/generated';
 
 export const users: User[] = [
     {

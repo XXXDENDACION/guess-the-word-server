@@ -31,7 +31,7 @@ type Query {
   dogs(word: String): String!
   user(id: Int!): User! @auth(requires: ADMIN)
   users: [User]! @auth(requires: ADMIN)
-  login(input: loginUserInput!): Tokens
+  login(input: loginUserInput!): GeneratedTokens!
   refresh(refreshToken: String!): GeneratedTokens!
 }
 

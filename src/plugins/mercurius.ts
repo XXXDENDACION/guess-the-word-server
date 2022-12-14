@@ -1,7 +1,8 @@
 import fp from 'fastify-plugin';
-import { FastifyPluginCallback } from 'fastify';
+import type { FastifyPluginCallback } from 'fastify';
 
-import mercurius, { IResolvers } from 'mercurius';
+import type { IResolvers } from 'mercurius';
+import mercurius from 'mercurius';
 import { codegenMercurius, loadSchemaFiles } from 'mercurius-codegen';
 import mercuriusAuth from 'mercurius-auth';
 

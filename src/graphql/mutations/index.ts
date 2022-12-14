@@ -1,5 +1,5 @@
-import { IResolvers } from 'mercurius'
-import { MutationResolvers } from '../generated'
+import type { IResolvers } from 'mercurius'
+import type { MutationResolvers } from '../generated'
 
 type Mutations = {
     add: MutationResolvers['add']

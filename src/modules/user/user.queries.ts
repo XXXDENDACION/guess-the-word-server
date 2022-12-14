@@ -1,7 +1,16 @@
-import { IResolvers } from 'mercurius';
 import { users } from '../../data/users';
-import { QueryloginArgs, QueryResolvers } from '../../graphql/generated';
-import { generateRefreshToken } from './user.service';
+import {
+    generateTokens,
+    updateRefreshTokenForUser,
+    validateRefreshToken,
+} from './user.service';
+
+import type { IResolvers, MercuriusContext } from 'mercurius';
+import type {
+    QueryloginArgs,
+    QueryrefreshArgs,
+    QueryResolvers,
+} from '../../graphql/generated';
 
 type UserQueries = {
     users: QueryResolvers['users'];
@@ -24,6 +33,7 @@ export const userQueries: IResolvers<UserQueries> = {
             return user;
         },
         login: async (_, { input }: QueryloginArgs, context) => {
+            console.log(input);
             const user = await context.prisma.user.findFirst({
                 where: {
                     socialId: input.socialId,
@@ -41,40 +51,74 @@ export const userQueries: IResolvers<UserQueries> = {
                     },
                 });
 
-                const refreshToken = await generateRefreshToken(
-                    {
-                        id: newUser.id,
-                        socialId: newUser.socialId,
-                        provider: newUser.provider,
-                    },
+                const { refreshToken, accessToken } = await generateTokens(
+                    newUser,
                     context
                 );
 
-                return await context.prisma.tokens.create({
+                await context.prisma.tokens.create({
                     data: {
                         userId: newUser.id,
                         refreshToken,
                         updatedAt: new Date(),
                     },
                 });
+
+                return {
+                    refreshToken,
+                    accessToken,
+                };
             }
 
-            const refreshToken = await generateRefreshToken(
-                {
-                    id: user.id,
-                    socialId: user.socialId,
-                    provider: user.provider,
-                },
+            const { refreshToken, accessToken } = await generateTokens(
+                user,
                 context
             );
 
-            return await context.prisma.tokens.update({
-                where: { userId: user.id },
-                data: {
-                    refreshToken,
-                    updatedAt: new Date(),
+            await updateRefreshTokenForUser(refreshToken, user.id, context);
+
+            return {
+                accessToken,
+                refreshToken,
+            };
+        },
+        refresh: async (
+            _,
+            { refreshToken }: QueryrefreshArgs,
+            context: MercuriusContext
+        ) => {
+            const refreshPayload = await validateRefreshToken(
+                refreshToken,
+                context
+            );
+
+            if (!refreshPayload) {
+                throw new Error('Refresh token is invalid');
+            }
+
+            const tokenEntity = await context.prisma.tokens.findFirst({
+                where: {
+                    refreshToken: refreshToken,
+                },
+                include: {
+                    user: true,
                 },
             });
+
+            if (!tokenEntity) {
+                throw new Error('No user');
+            }
+
+            const { user } = tokenEntity;
+
+            const newTokens = await generateTokens(user, context);
+            await updateRefreshTokenForUser(
+                newTokens.refreshToken,
+                user.id,
+                context
+            );
+
+            return newTokens;
         },
     },
 };

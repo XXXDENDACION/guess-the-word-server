@@ -1,22 +1,26 @@
-import { IncomingMessage, Server, ServerResponse } from 'http';
 import path from 'path';
 import * as dotenv from 'dotenv';
-import fastify, { FastifyInstance } from 'fastify';
+import type { FastifyInstance } from 'fastify';
+import fastify from 'fastify';
 import AutoLoad from '@fastify/autoload';
+import cors from '@fastify/cors';
+
+import type { IncomingMessage, Server, ServerResponse } from 'http';
 
 dotenv.config();
 
-export const app: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify(
-    { logger: true },
-);
+export const app: FastifyInstance<Server, IncomingMessage, ServerResponse> =
+    fastify({ logger: true });
 
 app.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
 });
 
-app.get('/ping', async (request, reply) => 'pong\n');
+app.register(cors, {});
 
-app.get('/', async (request, reply) => 'Hello');
+app.get('/ping', async () => 'pong\n');
+
+app.get('/', async () => 'Hello');
 
 app.listen({ port: 8080 }, (err, address) => {
     if (err) {

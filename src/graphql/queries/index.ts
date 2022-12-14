@@ -1,5 +1,5 @@
-import { IResolvers } from 'mercurius'
-import { QueryResolvers } from '../generated'
+import type { IResolvers } from 'mercurius'
+import type { QueryResolvers } from '../generated'
 
 type Queries = {
     dogs: QueryResolvers['dogs']
