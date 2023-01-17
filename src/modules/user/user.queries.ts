@@ -112,6 +112,7 @@ export const userQueries: IResolvers<UserQueries> = {
             const { user } = tokenEntity;
 
             const newTokens = await generateTokens(user, context);
+
             await updateRefreshTokenForUser(
                 newTokens.refreshToken,
                 user.id,

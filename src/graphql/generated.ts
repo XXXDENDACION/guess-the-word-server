@@ -57,10 +57,15 @@ export type loginUserInput = {
     email: Scalars['String'];
 };
 
+export type createGameInput = {
+    usersId: Array<Scalars['Int']>;
+};
+
 export type Mutation = {
     __typename?: 'Mutation';
     add: Scalars['Int'];
     createUser: User;
+    createGame: GameResult;
 };
 
 export type MutationaddArgs = {
@@ -70,6 +75,10 @@ export type MutationaddArgs = {
 
 export type MutationcreateUserArgs = {
     user: createUserInput;
+};
+
+export type MutationcreateGameArgs = {
+    game: createGameInput;
 };
 
 export type Query = {
@@ -95,6 +104,11 @@ export type QueryloginArgs = {
 
 export type QueryrefreshArgs = {
     refreshToken: Scalars['String'];
+};
+
+export type Error = {
+    __typename?: 'Error';
+    message: Scalars['String'];
 };
 
 export type GeneratedTokens = {
@@ -123,6 +137,18 @@ export type Tokens = {
     createdAt?: Maybe<Scalars['DateTime']>;
     updatedAt?: Maybe<Scalars['DateTime']>;
 };
+
+export type Game = {
+    __typename?: 'Game';
+    id: Scalars['Int'];
+    createdAt: Scalars['DateTime'];
+    updatedAt: Scalars['DateTime'];
+    users?: Maybe<Array<Maybe<User>>>;
+    word: Scalars['String'];
+    timeEnd: Scalars['DateTime'];
+};
+
+export type GameResult = Game | Error;
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -229,12 +255,16 @@ export type ResolversTypes = {
     createUserInput: createUserInput;
     String: ResolverTypeWrapper<Scalars['String']>;
     loginUserInput: loginUserInput;
-    Mutation: ResolverTypeWrapper<{}>;
+    createGameInput: createGameInput;
     Int: ResolverTypeWrapper<Scalars['Int']>;
+    Mutation: ResolverTypeWrapper<{}>;
     Query: ResolverTypeWrapper<{}>;
+    Error: ResolverTypeWrapper<Error>;
     GeneratedTokens: ResolverTypeWrapper<GeneratedTokens>;
     User: ResolverTypeWrapper<User>;
     Tokens: ResolverTypeWrapper<Tokens>;
+    Game: ResolverTypeWrapper<Game>;
+    GameResult: ResolversTypes['Game'] | ResolversTypes['Error'];
     Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -244,12 +274,16 @@ export type ResolversParentTypes = {
     createUserInput: createUserInput;
     String: Scalars['String'];
     loginUserInput: loginUserInput;
-    Mutation: {};
+    createGameInput: createGameInput;
     Int: Scalars['Int'];
+    Mutation: {};
     Query: {};
+    Error: Error;
     GeneratedTokens: GeneratedTokens;
     User: User;
     Tokens: Tokens;
+    Game: Game;
+    GameResult: ResolversParentTypes['Game'] | ResolversParentTypes['Error'];
     Boolean: Scalars['Boolean'];
 };
 
@@ -284,6 +318,12 @@ export type MutationResolvers<
         ParentType,
         ContextType,
         RequireFields<MutationcreateUserArgs, 'user'>
+    >;
+    createGame?: Resolver<
+        ResolversTypes['GameResult'],
+        ParentType,
+        ContextType,
+        RequireFields<MutationcreateGameArgs, 'game'>
     >;
 };
 
@@ -320,6 +360,14 @@ export type QueryResolvers<
         ContextType,
         RequireFields<QueryrefreshArgs, 'refreshToken'>
     >;
+};
+
+export type ErrorResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['Error'] = ResolversParentTypes['Error']
+> = {
+    message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GeneratedTokensResolvers<
@@ -370,13 +418,40 @@ export type TokensResolvers<
     isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GameResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['Game'] = ResolversParentTypes['Game']
+> = {
+    id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+    createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+    updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+    users?: Resolver<
+        Maybe<Array<Maybe<ResolversTypes['User']>>>,
+        ParentType,
+        ContextType
+    >;
+    word?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+    timeEnd?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+    isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GameResultResolvers<
+    ContextType = MercuriusContext,
+    ParentType extends ResolversParentTypes['GameResult'] = ResolversParentTypes['GameResult']
+> = {
+    resolveType: TypeResolveFn<'Game' | 'Error', ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = MercuriusContext> = {
     DateTime?: GraphQLScalarType;
     Mutation?: MutationResolvers<ContextType>;
     Query?: QueryResolvers<ContextType>;
+    Error?: ErrorResolvers<ContextType>;
     GeneratedTokens?: GeneratedTokensResolvers<ContextType>;
     User?: UserResolvers<ContextType>;
     Tokens?: TokensResolvers<ContextType>;
+    Game?: GameResolvers<ContextType>;
+    GameResult?: GameResultResolvers<ContextType>;
 };
 
 export type DirectiveResolvers<ContextType = MercuriusContext> = {
@@ -405,6 +480,10 @@ export interface Loaders<
         reply: import('fastify').FastifyReply;
     }
 > {
+    Error?: {
+        message?: LoaderResolver<Scalars['String'], Error, {}, TContext>;
+    };
+
     GeneratedTokens?: {
         accessToken?: LoaderResolver<
             Maybe<Scalars['String']>,
@@ -447,6 +526,15 @@ export interface Loaders<
             {},
             TContext
         >;
+    };
+
+    Game?: {
+        id?: LoaderResolver<Scalars['Int'], Game, {}, TContext>;
+        createdAt?: LoaderResolver<Scalars['DateTime'], Game, {}, TContext>;
+        updatedAt?: LoaderResolver<Scalars['DateTime'], Game, {}, TContext>;
+        users?: LoaderResolver<Maybe<Array<Maybe<User>>>, Game, {}, TContext>;
+        word?: LoaderResolver<Scalars['String'], Game, {}, TContext>;
+        timeEnd?: LoaderResolver<Scalars['DateTime'], Game, {}, TContext>;
     };
 }
 declare module 'mercurius' {

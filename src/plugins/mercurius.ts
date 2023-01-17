@@ -11,15 +11,18 @@ import { resolvers as baseResolvers } from '../graphql';
 import { buildContext } from '../graphql/mercuriusContext';
 
 import { userResolvers } from '../modules/user';
+import { gameResolvers } from '../modules/game';
 
 const resolvers: IResolvers = {
     Query: {
         ...baseResolvers.Query,
         ...userResolvers.Query,
+        ...gameResolvers.Query,
     },
     Mutation: {
         ...baseResolvers.Mutation,
         ...userResolvers.Mutation,
+        ...gameResolvers.Mutation,
     },
 };
 

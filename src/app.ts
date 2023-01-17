@@ -10,7 +10,7 @@ import type { IncomingMessage, Server, ServerResponse } from 'http';
 dotenv.config();
 
 export const app: FastifyInstance<Server, IncomingMessage, ServerResponse> =
-    fastify({ logger: true });
+    fastify({ logger: false });
 
 app.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),

@@ -22,9 +22,14 @@ input loginUserInput {
   email: String!
 }
 
+input createGameInput {
+  usersId: [Int!]!
+}
+
 type Mutation {
   add(x: Int!, y: Int!): Int!
   createUser(user: createUserInput!): User!
+  createGame(game: createGameInput!): GameResult!
 }
 
 type Query {
@@ -33,6 +38,10 @@ type Query {
   users: [User]! @auth(requires: ADMIN)
   login(input: loginUserInput!): GeneratedTokens!
   refresh(refreshToken: String!): GeneratedTokens!
+}
+
+type Error {
+  message: String!
 }
 
 type GeneratedTokens {
@@ -58,3 +67,14 @@ type Tokens {
   createdAt: DateTime
   updatedAt: DateTime
 }
+
+type Game {
+  id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  users: [User]
+  word: String!
+  timeEnd: DateTime!
+}
+
+union GameResult = Game | Error
