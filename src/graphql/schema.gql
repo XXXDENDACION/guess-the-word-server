@@ -29,7 +29,8 @@ input createGameInput {
 type Mutation {
   add(x: Int!, y: Int!): Int!
   createUser(user: createUserInput!): User!
-  createGame(game: createGameInput!): GameResult!
+  createGame(game: createGameInput!): GameResult! @auth(requires: ADMIN)
+  enterWord(word: String!, round: Int!, gameId: Int!): DifferenceBetweenWords @auth(requires: ADMIN)
 }
 
 type Query {
@@ -40,8 +41,24 @@ type Query {
   refresh(refreshToken: String!): GeneratedTokens!
 }
 
+type Subscription {
+  enteredWord: CurrentRound
+}
+
 type Error {
   message: String!
+}
+
+type DifferenceBetweenWords {
+  letter_1: LetterResultType
+  letter_2: LetterResultType
+  letter_3: LetterResultType
+  letter_4: LetterResultType
+  letter_5: LetterResultType
+}
+
+type CurrentRound {
+  round: Int!
 }
 
 type GeneratedTokens {
@@ -74,7 +91,15 @@ type Game {
   updatedAt: DateTime!
   users: [User]
   word: String!
+  guessed: [User]
+  failed: [User]
   timeEnd: DateTime!
 }
 
 union GameResult = Game | Error
+
+enum LetterResultType {
+  CORRECT
+  OTHER_PLACE
+  INCORRECT
+}

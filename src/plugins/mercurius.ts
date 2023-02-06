@@ -24,6 +24,9 @@ const resolvers: IResolvers = {
         ...userResolvers.Mutation,
         ...gameResolvers.Mutation,
     },
+    Subscription: {
+        ...gameResolvers.Subscription,
+    },
 };
 
 const mercuriusPlugin: FastifyPluginCallback = (server, opts, done) => {
@@ -44,7 +47,12 @@ const mercuriusPlugin: FastifyPluginCallback = (server, opts, done) => {
         schema,
         resolvers,
         context: (request, reply) => buildContext(request, reply, server),
-        subscription: true,
+        subscription: {
+            context: (_, req) => {
+                console.log('@@@@@', req.headers['Authorization']);
+                return { user: req.headers['Authorization'] };
+            },
+        },
         graphiql: true,
     });
 
@@ -73,4 +81,4 @@ const mercuriusPlugin: FastifyPluginCallback = (server, opts, done) => {
     done();
 };
 
-export default fp(mercuriusPlugin);
+// export default fp(mercuriusPlugin);

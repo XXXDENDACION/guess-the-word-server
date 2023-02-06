@@ -56,7 +56,7 @@ export async function updateRefreshTokenForUser(
     context: MercuriusContext
 ) {
     try {
-        await context.prisma.tokens.update({
+        await context.prisma.tokens.updateMany({
             where: { userId },
             data: {
                 refreshToken,

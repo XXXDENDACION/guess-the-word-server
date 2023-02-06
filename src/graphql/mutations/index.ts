@@ -1,14 +1,9 @@
-import type { IResolvers } from 'mercurius'
-import type { MutationResolvers } from '../generated'
+import type { Resolvers } from '../../__generated__/resolvers-types';
 
-type Mutations = {
-    add: MutationResolvers['add']
-}
-
-export const mutations: IResolvers<Mutations> = {
+export const mutations: Resolvers = {
     Mutation: {
         add: async (_, { x, y }) => {
-            return x + y
+            return x + y;
         },
     },
-}
+};

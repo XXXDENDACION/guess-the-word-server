@@ -1,12 +1,7 @@
-import type { IResolvers } from 'mercurius'
-import type { QueryResolvers } from '../generated'
+import type { Resolvers } from '../../__generated__/resolvers-types';
 
-type Queries = {
-    dogs: QueryResolvers['dogs']
-}
-
-export const queries: IResolvers<Queries> = {
+export const queries: Resolvers = {
     Query: {
         dogs: async (_, { word }) => `Wow! ${String(word)}`,
     },
-}
+};

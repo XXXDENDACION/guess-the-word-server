@@ -19,6 +19,8 @@ model User {
   role      String?
   tokens    Tokens[]
   Game      Game[]
+  guessedGames  Game[] @relation("Guessed")
+  failedGames   Game[] @relation("Failed")
 }
 
 model Tokens {
@@ -36,5 +38,7 @@ model Game {
   updatedAt DateTime    @updatedAt
   users     User[]
   word      String
+  guessed   User[]      @relation("Guessed")
+  failed    User[]      @relation("Failed")
   timeEnd   DateTime?
 }

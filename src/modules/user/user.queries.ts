@@ -105,6 +105,8 @@ export const userQueries: IResolvers<UserQueries> = {
                 },
             });
 
+            console.log(tokenEntity);
+
             if (!tokenEntity) {
                 throw new Error('No user');
             }
