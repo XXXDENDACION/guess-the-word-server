@@ -1,10 +1,5 @@
-import type { IResolvers } from 'mercurius';
-// import type { QueryResolvers } from '../../graphql/generated';
+import type { Resolvers } from '../../__generated__/resolvers-types';
 
-type GameQueries = {
-    //
-};
-
-export const gameQueries: IResolvers<GameQueries> = {
+export const gameQueries: Resolvers = {
     Query: {},
 };

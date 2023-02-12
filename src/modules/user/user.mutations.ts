@@ -1,21 +1,17 @@
-import type { IResolvers, MercuriusContext } from 'mercurius'
-import type { MutationResolvers } from '../../graphql/generated'
+import type { Resolvers } from '../../__generated__/resolvers-types';
+import type { ApolloContext } from '../../graphql/apolloContext';
 
-type UserMutations = {
-    createUser: MutationResolvers['createUser']
-}
-
-export const userMutations: IResolvers<UserMutations> = {
+export const userMutations: Resolvers = {
     Mutation: {
-        createUser: async (_, { user }, context: MercuriusContext) => {
+        createUser: async (_, { user }, context: ApolloContext) => {
             const newUser = await context.prisma.user.create({
                 data: {
                     ...user,
                 },
-            })
+            });
 
-            console.log(newUser)
-            return newUser
+            console.log(newUser);
+            return newUser;
         },
     },
-}
+};

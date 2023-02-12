@@ -1,34 +1,30 @@
-import mercurius from 'mercurius';
-import type { IResolvers, MercuriusContext } from 'mercurius';
-import type { SubscriptionResolvers } from '../../graphql/generated';
 import type { IPayloadEnteredWord } from './game.interfaces';
-import fastifyJwt from '@fastify/jwt';
+import { withFilter } from '../../graphql/withFilterTypingHack';
+import type { ApolloSubscriptionContext } from '../../graphql/apolloSubscriptionContext';
 
-type GameSubscriptions = {
-    enteredWord: SubscriptionResolvers['enteredWord'];
-};
+import type { Resolvers } from '../../__generated__/resolvers-types';
 
-const { withFilter } = mercurius;
-
-export const gameSubscriptions: IResolvers<GameSubscriptions> = {
+export const gameSubscriptions: Resolvers = {
     Subscription: {
         enteredWord: {
             subscribe: withFilter(
-                async (_, args, context: MercuriusContext) => {
-                    // console.log(context.user);
-                    return await context.pubsub.subscribe(['ENTERED_WORD']);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                (_, _args, context: ApolloSubscriptionContext) => {
+                    return context.pubSub.asyncIterator('ENTERED_WORD');
                 },
-                ({ enteredWord }: IPayloadEnteredWord, args, context) => {
-                    // const authToken = context.request.headers['Authorization'];
-                    // const test = context.app.jwt.decode(authToken as 'string');
-                    // console.log('@@@@', context.user);
-                    // if (typeof authToken === 'string') {
-                    //     console.log(fastifyJwt.);
-                    //     console.log(context.app.jwt.decode(authToken));
-                    // }
-                    // if (!enteredWord) return false;
+                (
+                    payload: IPayloadEnteredWord,
+                    variables,
+                    context: ApolloSubscriptionContext
+                ) => {
+                    const subscribedUserIds = payload.enteredWord.usersId;
+                    const currentUserId = context?.currentUser?.id || null;
 
-                    return true;
+                    if (currentUserId) {
+                        return subscribedUserIds.includes(currentUserId);
+                    }
+                    return false;
                 }
             ),
         },

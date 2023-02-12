@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
-    "importsNotUsedAsValues": "error",
+    "importsNotUsedAsValues": "error"
   },
   "files": [
     "declarations/fastify.d.ts",

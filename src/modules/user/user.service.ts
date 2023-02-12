@@ -1,4 +1,4 @@
-import type { MercuriusContext } from 'mercurius';
+import type { ApolloContext } from '../../graphql/apolloContext';
 
 type RefreshPayload = {
     id: number;
@@ -13,7 +13,7 @@ type GenerateTokens = {
 
 export async function generateTokens(
     payload: RefreshPayload,
-    context: MercuriusContext
+    context: ApolloContext
 ): Promise<GenerateTokens> {
     const refreshToken = await context.reply.jwtSign(payload, {
         expiresIn: '2d',
@@ -30,7 +30,7 @@ export async function generateTokens(
 
 export async function validateRefreshToken(
     token: string,
-    context: MercuriusContext
+    context: ApolloContext
 ) {
     try {
         return context.app.jwt.verify(token);
@@ -41,7 +41,7 @@ export async function validateRefreshToken(
 
 export async function validateAccessToken(
     token: string,
-    context: MercuriusContext
+    context: ApolloContext
 ) {
     try {
         return context.app.jwt.verify(token);
@@ -53,7 +53,7 @@ export async function validateAccessToken(
 export async function updateRefreshTokenForUser(
     refreshToken: string,
     userId: number,
-    context: MercuriusContext
+    context: ApolloContext
 ) {
     try {
         await context.prisma.tokens.updateMany({

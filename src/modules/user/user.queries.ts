@@ -1,27 +1,16 @@
-import { users } from '../../data/users';
 import {
     generateTokens,
     updateRefreshTokenForUser,
     validateRefreshToken,
 } from './user.service';
 
-import type { IResolvers, MercuriusContext } from 'mercurius';
-import type {
-    QueryloginArgs,
-    QueryrefreshArgs,
-    QueryResolvers,
-} from '../../graphql/generated';
+import type { Resolvers } from '../../__generated__/resolvers-types';
+import type { ApolloContext } from '../../graphql/apolloContext';
 
-type UserQueries = {
-    users: QueryResolvers['users'];
-    user: QueryResolvers['user'];
-    login: QueryResolvers['login'];
-};
-
-export const userQueries: IResolvers<UserQueries> = {
+export const userQueries: Resolvers = {
     Query: {
-        users: async () => users,
-        user: async (_, { id }, context) => {
+        users: async () => [],
+        user: async (parent, { id }, context: ApolloContext) => {
             const user = await context.prisma.user.findUnique({
                 where: {
                     id: id,
@@ -30,9 +19,11 @@ export const userQueries: IResolvers<UserQueries> = {
             if (!user) {
                 throw new Error('unknown user');
             }
+
+            console.log(user);
             return user;
         },
-        login: async (_, { input }: QueryloginArgs, context) => {
+        login: async (_, { input }, context: ApolloContext) => {
             console.log(input);
             const user = await context.prisma.user.findFirst({
                 where: {
@@ -82,11 +73,7 @@ export const userQueries: IResolvers<UserQueries> = {
                 refreshToken,
             };
         },
-        refresh: async (
-            _,
-            { refreshToken }: QueryrefreshArgs,
-            context: MercuriusContext
-        ) => {
+        refresh: async (_, { refreshToken }, context: ApolloContext) => {
             const refreshPayload = await validateRefreshToken(
                 refreshToken,
                 context
